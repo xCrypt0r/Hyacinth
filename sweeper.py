@@ -2,29 +2,46 @@ import requests
 import threading
 import os.path
 import urllib3
+import http
 from urllib import request
 from pathlib import Path
 from bs4 import BeautifulSoup
+from fake_useragent import UserAgent
 
 class DCSweeper:
-    def __init__(self, target_gallery, gallery_title):
+    def __init__(self, gui, index, target_gallery, gallery_title):
+        self._timer = None
+        self.gui = gui
+        self.index = index
         self.list_url = 'https://gall.dcinside.com/board/lists/'
         self.post_url = 'https://gall.dcinside.com/board/view/'
         self.target_gallery = target_gallery
         self.gallery_title = gallery_title
-        self.headers = { 'User-Agent': '' }
+        self.ua = UserAgent()
         self.post_sweeped = []
+        self.image_count = 0
 
     def start_sweeping(self):
         self.sweep_images_from_post(self.get_target_post())
-        threading.Timer(2, self.start_sweeping).start()
+
+        self._timer = threading.Timer(2, self.start_sweeping)
+
+        self._timer.start()
+
+    def stop_sweeping(self):
+        self._timer.cancel()
 
     def get_target_post(self):
         req = requests.get(self.list_url,
             params={ 'id': self.target_gallery },
-            headers=self.headers)
+            headers={ 'User-Agent': self.ua.random })
         soup = BeautifulSoup(req.content, 'html.parser')
-        target = soup.find('tbody').find('tr', { 'data-type': 'icon_pic' })
+        tbody = soup.find('tbody')
+
+        if tbody is None:
+            return
+
+        target = tbody.find('tr', { 'data-type': 'icon_pic' })
         target_post = target['data-no']
 
         return target_post
@@ -38,17 +55,27 @@ class DCSweeper:
         try:
             req = requests.get(self.post_url,
                 params={ 'id': self.target_gallery, 'no': target_post },
-                headers=self.headers)
-        except (requests.exceptions.ConnectionError, urllib3.exceptions.MaxRetryError):
+                headers={ 'User-Agent': self.ua.random },
+                timeout=5)
+        except (
+            requests.exceptions.RequestException,
+            urllib3.exceptions.MaxRetryError,
+            http.client.RemoteDisconnected,
+            TimeoutError,
+            OSError
+        ):
             return
 
         soup = BeautifulSoup(req.content, 'html.parser')
         appending_file = soup.find('ul', class_='appending_file')
-        post_title = soup.find('span', class_='title_subject').text
-        post_date = soup.find('span', class_='gall_date').text
 
         if appending_file is None:
             return
+
+        post_title = soup.find('span', class_='title_subject').text
+        post_date = soup.find('span', class_='gall_date').text
+
+
 
         print(f'[{post_date[-8:]}] <{self.gallery_title}> {post_title}')
 
@@ -58,10 +85,13 @@ class DCSweeper:
             attachment_url = attachment.find('a', href=True)['href']
             extension = os.path.splitext(attachment_url)[1]
             opener = request.build_opener()
-
-            opener.addheaders = [('User-agent', ''), ('Referer', req.url)]
+            opener.addheaders = [('User-agent', self.ua.random), ('Referer', req.url)]
 
             Path(f'archive/{self.gallery_title}').mkdir(parents=True, exist_ok=True)
             request.install_opener(opener)
             request.urlretrieve(attachment_url,
                 f'archive/{self.gallery_title}/{self.target_gallery}_{target_post}_{i + 1}{extension}')
+
+            self.image_count += 1
+
+        self.gui.update(self.index, self.image_count)

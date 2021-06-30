@@ -1,9 +1,4 @@
 {
-    "target_galleries": [
-        "baseball_new10",
-        "football_new7",
-        "comic_new2"
-    ],
     "galleries": {
         "akb48": "AKB48",
         "ani1_new1": "애니-일본",
