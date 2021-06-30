@@ -75,8 +75,6 @@ class DCSweeper:
         post_title = soup.find('span', class_='title_subject').text
         post_date = soup.find('span', class_='gall_date').text
 
-
-
         print(f'[{post_date[-8:]}] <{self.gallery_title}> {post_title}')
 
         attachments = appending_file.find_all('li')
