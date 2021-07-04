@@ -11,6 +11,7 @@ class DCSweeper:
         self._timer = None
         self.gui = gui
         self.is_minor = gallery_title.startswith('ⓜ')
+        self.is_stopped = False
         self.list_url = 'https://gall.dcinside.com/board/lists/'
         self.post_url = 'https://gall.dcinside.com/board/view/'
         self.target_gallery = target_gallery
@@ -24,6 +25,11 @@ class DCSweeper:
             self.post_url = self.post_url.replace('board', 'mgallery/board')
 
     def start_sweeping(self):
+        if self.is_stopped:
+            self._timer.cancel()
+
+            return
+
         self.sweep_images_from_post(self.get_target_post())
 
         self._timer = threading.Timer(2, self.start_sweeping)
@@ -32,6 +38,8 @@ class DCSweeper:
 
     def stop_sweeping(self):
         self._timer.cancel()
+
+        self.is_stopped = True
 
     def get_target_post(self):
         req = requests.get(self.list_url,
