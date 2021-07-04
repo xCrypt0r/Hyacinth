@@ -1,8 +1,6 @@
 import requests
 import threading
 import os.path
-import urllib3
-import http
 from urllib import request
 from pathlib import Path
 from bs4 import BeautifulSoup
