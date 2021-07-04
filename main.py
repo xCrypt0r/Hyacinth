@@ -58,10 +58,13 @@ class Window(QWidget):
         header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
 
     def add_target(self):
+        self.btn_add.setEnabled(False)
+
         gallery_title = self.cmb_galleries.currentText()
 
         if self.get_gallery_index(gallery_title) is not None:
             self.send_message_signal.emit('이미 테이블에 추가된 갤러리입니다!', '오류')
+            self.btn_add.setEnabled(True)
 
             return
 
@@ -76,6 +79,7 @@ class Window(QWidget):
 
         sweeper.start_sweeping()
         self.sweepers.append(sweeper)
+        self.btn_add.setEnabled(True)
 
     def remove_target(self):
         index = self.tbl_targets.currentIndex().row()
