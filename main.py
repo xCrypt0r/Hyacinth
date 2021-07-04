@@ -1,5 +1,7 @@
 import sys
 import json
+import qtmodern.styles
+import qtmodern.windows
 from PySide2.QtGui import QIcon
 from PySide2.QtWidgets import *
 from PySide2.QtCore import *
@@ -26,7 +28,7 @@ class Window(QWidget):
 
     def load_ui(self):
         self.setWindowTitle('DCSweeper')
-        self.setGeometry(100, 100, 500, 300)
+        self.setFixedSize(500, 300)
         self.setWindowIcon(QIcon('assets/icon.png'))
 
         qr = self.frameGeometry()
@@ -53,6 +55,9 @@ class Window(QWidget):
 
         self.tbl_targets.setHorizontalHeaderLabels(['갤러리', '화력', '재연결'])
         self.tbl_targets.setGeometry(20, 60, 460, 220)
+        self.tbl_targets.horizontalHeader().setStyleSheet(
+            'QHeaderView::section { padding-right: 10px; border: 0 }')
+        self.tbl_targets.verticalHeader().setVisible(False)
         self.tbl_targets.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.tbl_targets.setFocusPolicy(Qt.NoFocus)
         self.tbl_targets.setSelectionMode(QAbstractItemView.NoSelection)
@@ -82,9 +87,10 @@ class Window(QWidget):
         self.tbl_targets.setItem(index, 0, QTableWidgetItem(gallery_title))
         self.tbl_targets.setItem(index, 1, QTableWidgetItem('0'))
 
-        btn_refresh = QPushButton(self.tbl_targets)
+        btn_refresh = QPushButton(self.tbl_targets, flat=True)
 
         self.tbl_targets.setCellWidget(index, 2, btn_refresh)
+        btn_refresh.setStyleSheet('background-color: rgba(255, 255, 255, 0)')
         btn_refresh.setIcon(QIcon('assets/refresh.png'))
         btn_refresh.clicked.connect(self.refresh_target)
 
@@ -166,7 +172,8 @@ class Window(QWidget):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    window = Window()
+    window = qtmodern.windows.ModernWindow(Window())
 
+    qtmodern.styles.dark(app)
     window.show()
     app.exec_()
