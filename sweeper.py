@@ -9,10 +9,9 @@ from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
 
 class DCSweeper:
-    def __init__(self, gui, index, target_gallery, gallery_title):
+    def __init__(self, gui, target_gallery, gallery_title):
         self._timer = None
         self.gui = gui
-        self.index = index
         self.list_url = 'https://gall.dcinside.com/board/lists/'
         self.post_url = 'https://gall.dcinside.com/board/view/'
         self.target_gallery = target_gallery
@@ -57,13 +56,9 @@ class DCSweeper:
                 params={ 'id': self.target_gallery, 'no': target_post },
                 headers={ 'User-Agent': self.ua.random },
                 timeout=5)
-        except (
-            requests.exceptions.RequestException,
-            urllib3.exceptions.MaxRetryError,
-            http.client.RemoteDisconnected,
-            TimeoutError,
-            OSError
-        ):
+        except:
+            self.gui.send_message_signal.emit(self.gallery_title + '에서 연결 오류 발생', '오류')
+
             return
 
         soup = BeautifulSoup(req.content, 'html.parser')
@@ -92,4 +87,4 @@ class DCSweeper:
 
             self.image_count += 1
 
-        self.gui.update(self.index, self.image_count)
+        self.gui.update_signal.emit(self.gallery_title, self.image_count)
