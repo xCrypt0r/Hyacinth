@@ -17,6 +17,8 @@ class Window(QWidget):
         with open('const.json', encoding='utf8') as const_file:
             const = json.load(const_file)
             self.galleries = const['galleries']
+            self.minor_galleries = dict(map(lambda x: (x[0], 'ⓜ' + x[1]),
+                const['minor_galleries'].items()))
 
         self.load_ui()
         self.send_message_signal.connect(self.show_message)
@@ -35,6 +37,8 @@ class Window(QWidget):
 
         self.cmb_galleries = QComboBox(self)
         galleries = list(sorted(self.galleries.values()))
+        minor_galleries = list(sorted(self.minor_galleries.values()))
+        galleries += minor_galleries
 
         self.cmb_galleries.addItems(galleries)
         self.cmb_galleries.setGeometry(20, 20, 140, 20)
@@ -97,7 +101,7 @@ class Window(QWidget):
             self.tbl_targets.removeRow(index)
 
     def get_gallery_id(self, gallery_title):
-        for id, title in self.galleries.items():
+        for id, title in { **self.galleries, **self.minor_galleries }.items():
             if title == gallery_title:
                 return id
 

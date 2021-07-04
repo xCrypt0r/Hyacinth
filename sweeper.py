@@ -10,6 +10,7 @@ class DCSweeper:
     def __init__(self, gui, target_gallery, gallery_title):
         self._timer = None
         self.gui = gui
+        self.is_minor = gallery_title.startswith('ⓜ')
         self.list_url = 'https://gall.dcinside.com/board/lists/'
         self.post_url = 'https://gall.dcinside.com/board/view/'
         self.target_gallery = target_gallery
@@ -17,6 +18,10 @@ class DCSweeper:
         self.ua = UserAgent()
         self.post_sweeped = []
         self.image_count = 0
+
+        if self.is_minor:
+            self.list_url = self.list_url.replace('board', 'mgallery/board')
+            self.post_url = self.post_url.replace('board', 'mgallery/board')
 
     def start_sweeping(self):
         self.sweep_images_from_post(self.get_target_post())
