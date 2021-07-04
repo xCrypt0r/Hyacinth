@@ -49,17 +49,20 @@ class Window(QWidget):
         self.btn_add.setGeometry(165, 20, 40, 20)
         self.btn_add.clicked.connect(self.add_target)
 
-        self.tbl_targets = QTableWidget(0, 2, self)
+        self.tbl_targets = QTableWidget(0, 3, self)
 
-        self.tbl_targets.setHorizontalHeaderLabels(['갤러리', '화력'])
+        self.tbl_targets.setHorizontalHeaderLabels(['갤러리', '화력', '재연결'])
         self.tbl_targets.setGeometry(20, 60, 460, 220)
         self.tbl_targets.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.tbl_targets.setFocusPolicy(Qt.NoFocus)
+        self.tbl_targets.setSelectionMode(QAbstractItemView.NoSelection)
         self.tbl_targets.doubleClicked.connect(self.remove_target)
 
         header = self.tbl_targets.horizontalHeader()
 
         header.setSectionResizeMode(0, QHeaderView.Stretch)
         header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
 
     def add_target(self):
         self.btn_add.setEnabled(False)
@@ -78,6 +81,12 @@ class Window(QWidget):
         self.tbl_targets.insertRow(index)
         self.tbl_targets.setItem(index, 0, QTableWidgetItem(gallery_title))
         self.tbl_targets.setItem(index, 1, QTableWidgetItem('0'))
+
+        btn_refresh = QPushButton(self.tbl_targets)
+
+        self.tbl_targets.setCellWidget(index, 2, btn_refresh)
+        btn_refresh.setIcon(QIcon('assets/refresh.png'))
+        btn_refresh.clicked.connect(self.refresh_target)
 
         sweeper = DCSweeper(self, gallery_id, gallery_title)
 
@@ -99,6 +108,22 @@ class Window(QWidget):
 
             sweeper.stop_sweeping()
             self.tbl_targets.removeRow(index)
+            self.sweepers.remove(sweeper)
+
+    def refresh_target(self):
+        btn = self.sender()
+        index = self.tbl_targets.indexAt(btn.pos()).row()
+        gallery_title = self.tbl_targets.item(index, 0).text()
+        gallery_id = self.get_gallery_id(gallery_title)
+        sweeper = self.get_sweeper(gallery_title)
+
+        sweeper.stop_sweeping()
+        self.sweepers.remove(sweeper)
+
+        sweeper = DCSweeper(self, gallery_id, gallery_title)
+
+        sweeper.start_sweeping()
+        self.sweepers.append(sweeper)
 
     def get_gallery_id(self, gallery_title):
         for id, title in { **self.galleries, **self.minor_galleries }.items():
