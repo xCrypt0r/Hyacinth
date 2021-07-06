@@ -3,7 +3,7 @@ import json
 import threading
 import qtmodern.styles
 import qtmodern.windows
-from PySide2.QtGui import QIcon
+from PySide2.QtGui import QIcon, QFontDatabase, QFont
 from PySide2.QtWidgets import *
 from PySide2.QtCore import *
 from sweeper import DCSweeper
@@ -195,7 +195,10 @@ class Window(QWidget):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     window = qtmodern.windows.ModernWindow(Window())
+    font_db = QFontDatabase()
 
+    font_db.addApplicationFont('assets/fonts/ONE Mobile POP.ttf')
     qtmodern.styles.dark(app)
     window.show()
+    app.setFont(QFont('ONE Mobile POP', 14))
     app.exec_()
