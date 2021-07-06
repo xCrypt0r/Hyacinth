@@ -25,6 +25,8 @@ Authored and maintained by xCrypt0r
 
 1. Run `pip install -r requirements.txt` to install all dependencies listed in [requirements.txt](requirements.txt)
 
+1. Run `ren config.example.json config.json` to rename [`config.example.json`](assets/json/config.example.json)
+
 1. Run `python main.py` or run [`start.bat`](start.bat) to start program
 
 [python]: https://www.python.org/
