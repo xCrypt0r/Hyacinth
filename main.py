@@ -200,5 +200,5 @@ if __name__ == '__main__':
     font_db.addApplicationFont('assets/fonts/ONE Mobile POP.ttf')
     qtmodern.styles.dark(app)
     window.show()
-    app.setFont(QFont('ONE Mobile POP', 14))
+    app.setFont(QFont('ONE Mobile POP', 12))
     app.exec_()
