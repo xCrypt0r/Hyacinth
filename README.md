@@ -27,7 +27,7 @@ Authored and maintained by xCrypt0r
 
 1. Run `ren config.example.json config.json` to rename [`config.example.json`](assets/json/config.example.json)
 
-1. Run `python main.py` or run [`start.bat`](start.bat) to start program
+1. Run `python main.py` or run [`start.bat`](start.bat) / [`start.vbs (no-console mode)`](start.vbs) to start program
 
 [python]: https://www.python.org/
 [my github]: https://github.com/xCrypt0r
