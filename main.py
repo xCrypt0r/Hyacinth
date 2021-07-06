@@ -23,8 +23,13 @@ class Window(QWidget):
             self.minor_galleries = dict(map(lambda x: (x[0], 'ⓜ' + x[1]),
                 const['minor_galleries'].items()))
 
+        with open('config.json', encoding='utf8') as config_file:
+            config = json.load(config_file)
+            self.default_target_galleries = config['default_target_galleries']
+
         self.load_ui()
         self.check_sweepers()
+        self.add_default_targets()
         self.send_message_signal.connect(self.show_message)
         self.update_signal.connect(self.update)
 
@@ -45,7 +50,6 @@ class Window(QWidget):
 
         self.cmb_galleries.addItems(galleries)
         self.cmb_galleries.setGeometry(20, 20, 140, 20)
-        self.cmb_galleries.setCurrentIndex(galleries.index('국내야구'))
 
         self.btn_add = QPushButton('추가', self)
 
@@ -83,6 +87,11 @@ class Window(QWidget):
         timer.daemon = True
 
         timer.start()
+
+    def add_default_targets(self):
+        for gallery_title in self.default_target_galleries:
+            self.cmb_galleries.setCurrentText(gallery_title)
+            self.add_target()
 
     def add_target(self):
         self.btn_add.setEnabled(False)
