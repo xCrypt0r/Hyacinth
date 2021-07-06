@@ -3,9 +3,27 @@ import json
 import threading
 import qtmodern.styles
 import qtmodern.windows
-from PySide2.QtGui import QIcon, QFontDatabase, QFont
-from PySide2.QtWidgets import *
-from PySide2.QtCore import *
+from PySide2.QtGui import (
+    QFont,
+    QFontDatabase,
+    QIcon
+)
+from PySide2.QtWidgets import (
+    QAbstractItemView,
+    QApplication,
+    QComboBox,
+    QHeaderView,
+    QMessageBox,
+    QPushButton,
+    QTableWidget,
+    QTableWidgetItem,
+    QWidget
+)
+from PySide2.QtCore import (
+    Signal,
+    Slot,
+    Qt
+)
 from sweeper import DCSweeper
 
 class Window(QWidget):
