@@ -3,4 +3,5 @@ __pycache__
 
 archive
 
+.idea
 assets/json/config.json
