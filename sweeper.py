@@ -7,14 +7,14 @@ from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
 
 class DCSweeper:
-    def __init__(self, gui, target_gallery, gallery_title):
+    def __init__(self, gui, gallery_id, gallery_title):
         self._timer = None
         self.gui = gui
         self.is_minor = gallery_title.startswith('ⓜ')
         self.is_stopped = False
         self.list_url = 'https://gall.dcinside.com/board/lists/'
         self.post_url = 'https://gall.dcinside.com/board/view/'
-        self.target_gallery = target_gallery
+        self.gallery_id = gallery_id
         self.gallery_title = gallery_title
         self.ua = UserAgent()
         self.post_sweeped = []
@@ -44,7 +44,7 @@ class DCSweeper:
 
     def get_target_post(self):
         req = requests.get(self.list_url,
-            params={ 'id': self.target_gallery },
+            params={ 'id': self.gallery_id },
             headers={ 'User-Agent': self.ua.random })
         soup = BeautifulSoup(req.content, 'html.parser')
         tbody = soup.find('tbody')
@@ -65,7 +65,7 @@ class DCSweeper:
 
         try:
             req = requests.get(self.post_url,
-                params={ 'id': self.target_gallery, 'no': target_post },
+                params={ 'id': self.gallery_id, 'no': target_post },
                 headers={ 'User-Agent': self.ua.random },
                 timeout=5)
         except:
@@ -93,7 +93,7 @@ class DCSweeper:
             Path(f'archive/{self.gallery_title}').mkdir(parents=True, exist_ok=True)
             request.install_opener(opener)
             request.urlretrieve(attachment_url,
-                f'archive/{self.gallery_title}/{self.target_gallery}_{target_post}_{i + 1}{extension}')
+                f'archive/{self.gallery_title}/{self.gallery_id}_{target_post}_{i + 1}{extension}')
 
             self.image_count += 1
 
