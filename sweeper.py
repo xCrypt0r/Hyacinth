@@ -33,6 +33,7 @@ class DCSweeper:
         self.sweep_images_from_post(self.get_target_post())
 
         self._timer = threading.Timer(2, self.start_sweeping)
+        self._timer.daemon = True
 
         self._timer.start()
 
@@ -68,8 +69,6 @@ class DCSweeper:
                 headers={ 'User-Agent': self.ua.random },
                 timeout=5)
         except:
-            self.gui.send_message_signal.emit(self.gallery_title + '에서 연결 오류 발생', '오류')
-
             return
 
         soup = BeautifulSoup(req.content, 'html.parser')

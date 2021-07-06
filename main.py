@@ -1,5 +1,6 @@
 import sys
 import json
+import threading
 import qtmodern.styles
 import qtmodern.windows
 from PySide2.QtGui import QIcon
@@ -23,13 +24,13 @@ class Window(QWidget):
                 const['minor_galleries'].items()))
 
         self.load_ui()
+        self.check_sweepers()
         self.send_message_signal.connect(self.show_message)
         self.update_signal.connect(self.update)
 
     def load_ui(self):
         self.setWindowTitle('DCSweeper')
         self.setFixedSize(500, 300)
-        self.setWindowIcon(QIcon('assets/icon.png'))
 
         qr = self.frameGeometry()
         cp = QApplication.primaryScreen().availableGeometry().center()
@@ -68,6 +69,20 @@ class Window(QWidget):
         header.setSectionResizeMode(0, QHeaderView.Stretch)
         header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
+
+    def check_sweepers(self):
+        if len(self.sweepers) > 0:
+            for sweeper in self.sweepers:
+                if not sweeper._timer.is_alive():
+                    print(f'\n<{sweeper.gallery_title}> 갤러리에 재연결합니다...\n')
+                    self.refresh_target(sweeper.gallery_title)
+
+                    break
+
+        timer = threading.Timer(5, self.check_sweepers)
+        timer.daemon = True
+
+        timer.start()
 
     def add_target(self):
         self.btn_add.setEnabled(False)
@@ -116,10 +131,12 @@ class Window(QWidget):
             self.tbl_targets.removeRow(index)
             self.sweepers.remove(sweeper)
 
-    def refresh_target(self):
-        btn = self.sender()
-        index = self.tbl_targets.indexAt(btn.pos()).row()
-        gallery_title = self.tbl_targets.item(index, 0).text()
+    def refresh_target(self, gallery_title=''):
+        if not gallery_title:
+            btn = self.sender()
+            index = self.tbl_targets.indexAt(btn.pos()).row()
+            gallery_title = self.tbl_targets.item(index, 0).text()
+
         gallery_id = self.get_gallery_id(gallery_title)
         sweeper = self.get_sweeper(gallery_title)
 
@@ -165,10 +182,6 @@ class Window(QWidget):
             msgbox.setWindowTitle(title)
 
         msgbox.show()
-
-    def closeEvent(self, QCloseEvent):
-        for sweeper in self.sweepers:
-            sweeper.stop_sweeping()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
