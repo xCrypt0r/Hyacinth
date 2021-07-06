@@ -49,11 +49,11 @@ class Window(QWidget):
         galleries += minor_galleries
 
         self.cmb_galleries.addItems(galleries)
-        self.cmb_galleries.setGeometry(20, 20, 140, 20)
+        self.cmb_galleries.setGeometry(20, 20, 140, 30)
 
         self.btn_add = QPushButton('추가', self)
 
-        self.btn_add.setGeometry(165, 20, 40, 20)
+        self.btn_add.setGeometry(165, 20, 40, 30)
         self.btn_add.clicked.connect(self.add_target)
 
         self.tbl_targets = QTableWidget(0, 3, self)
