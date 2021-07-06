@@ -176,9 +176,9 @@ class Window(QWidget):
         self.sweepers.append(sweeper)
 
     def get_gallery_id(self, gallery_title):
-        for id, title in { **self.galleries, **self.minor_galleries }.items():
+        for id_, title in { **self.galleries, **self.minor_galleries }.items():
             if title == gallery_title:
-                return id
+                return id_
 
     def get_gallery_index(self, gallery_title):
         for index in range(self.tbl_targets.rowCount()):
