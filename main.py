@@ -17,13 +17,13 @@ class Window(QWidget):
 
         self.sweepers = []
 
-        with open('const.json', encoding='utf8') as const_file:
+        with open('assets/json/const.json', encoding='utf8') as const_file:
             const = json.load(const_file)
             self.galleries = const['galleries']
             self.minor_galleries = dict(map(lambda x: (x[0], 'ⓜ' + x[1]),
                 const['minor_galleries'].items()))
 
-        with open('config.json', encoding='utf8') as config_file:
+        with open('assets/json/config.json', encoding='utf8') as config_file:
             config = json.load(config_file)
             self.default_target_galleries = config['default_target_galleries']
 
@@ -115,7 +115,7 @@ class Window(QWidget):
 
         self.tbl_targets.setCellWidget(index, 2, btn_refresh)
         btn_refresh.setStyleSheet('background-color: rgba(255, 255, 255, 0)')
-        btn_refresh.setIcon(QIcon('assets/refresh.png'))
+        btn_refresh.setIcon(QIcon('assets/images/refresh.png'))
         btn_refresh.clicked.connect(self.refresh_target)
 
         sweeper = DCSweeper(self, gallery_id, gallery_title)
