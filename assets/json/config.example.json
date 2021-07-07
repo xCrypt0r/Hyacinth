@@ -1,7 +1,10 @@
 {
+    "archive_path": "./archive",
     "default_target_galleries": [
         "국내야구",
         "스트리머",
         "인터넷방송"
-    ]
+    ],
+    "health_check_interval": 5,
+    "sweeping_interval": 2
 }

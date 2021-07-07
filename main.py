@@ -46,6 +46,7 @@ class Window(QMainWindow):
         with open('assets/json/config.json', encoding='utf8') as config_file:
             config = json.load(config_file)
             self.default_target_galleries = config['default_target_galleries']
+            self.health_check_interval = config['health_check_interval']
 
         self.load_ui()
         self.connect_signals()
@@ -109,7 +110,7 @@ class Window(QMainWindow):
                 except AttributeError:
                     pass
 
-        timer = threading.Timer(5, self.check_sweepers)
+        timer = threading.Timer(self.health_check_interval, self.check_sweepers)
         timer.daemon = True
 
         timer.start()

@@ -1,3 +1,4 @@
+import json
 import requests
 import threading
 import os.path
@@ -19,6 +20,11 @@ class DCSweeper:
         self.ua = UserAgent()
         self.post_sweeped = []
 
+        with open('assets/json/config.json', encoding='utf8') as config_file:
+            config = json.load(config_file)
+            self.folder = os.path.join(config['archive_path'], self.gallery_title)
+            self.sweeping_interval = config['sweeping_interval']
+
         if self.is_minor:
             self.list_url = self.list_url.replace('board', 'mgallery/board')
             self.post_url = self.post_url.replace('board', 'mgallery/board')
@@ -34,7 +40,7 @@ class DCSweeper:
 
         self.sweep_images_from_post(self.get_target_post())
 
-        self._timer = threading.Timer(2, self.start_sweeping)
+        self._timer = threading.Timer(self.sweeping_interval, self.start_sweeping)
         self._timer.daemon = True
 
         self._timer.start()
@@ -92,10 +98,10 @@ class DCSweeper:
             opener = request.build_opener()
             opener.addheaders = [('User-agent', self.ua.random), ('Referer', req.url)]
 
-            Path(f'archive/{self.gallery_title}').mkdir(parents=True, exist_ok=True)
+            Path(self.folder).mkdir(parents=True, exist_ok=True)
             request.install_opener(opener)
             request.urlretrieve(attachment_url,
-                f'archive/{self.gallery_title}/{self.gallery_id}_{target_post}_{i + 1}{extension}')
+                f'{self.folder}/{self.gallery_id}_{target_post}_{i + 1}{extension}')
 
             delta_count += 1
 
