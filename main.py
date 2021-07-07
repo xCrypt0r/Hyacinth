@@ -3,6 +3,11 @@ import json
 import threading
 import qtmodern.styles
 import qtmodern.windows
+from PySide2.QtCore import (
+    Qt,
+    Signal,
+    Slot
+)
 from PySide2.QtGui import (
     QFont,
     QFontDatabase,
@@ -13,20 +18,16 @@ from PySide2.QtWidgets import (
     QApplication,
     QComboBox,
     QHeaderView,
+    QMainWindow,
     QMessageBox,
     QPushButton,
     QTableWidget,
-    QTableWidgetItem,
-    QWidget
+    QTableWidgetItem
 )
-from PySide2.QtCore import (
-    Signal,
-    Slot,
-    Qt
-)
+from collections import defaultdict
 from sweeper import DCSweeper
 
-class Window(QWidget):
+class Window(QMainWindow):
     send_message_signal = Signal(str, str)
     update_signal = Signal(str, int)
 
@@ -34,6 +35,7 @@ class Window(QWidget):
         super().__init__()
 
         self.sweepers = []
+        self.gallery_power = defaultdict(int)
 
         with open('assets/json/const.json', encoding='utf8') as const_file:
             const = json.load(const_file)
@@ -46,10 +48,9 @@ class Window(QWidget):
             self.default_target_galleries = config['default_target_galleries']
 
         self.load_ui()
-        self.check_sweepers()
+        self.connect_signals()
         self.add_default_targets()
-        self.send_message_signal.connect(self.show_message)
-        self.update_signal.connect(self.update)
+        self.check_sweepers()
 
     def load_ui(self):
         self.setWindowTitle('DCSweeper')
@@ -91,6 +92,10 @@ class Window(QWidget):
         header.setSectionResizeMode(0, QHeaderView.Stretch)
         header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
+
+    def connect_signals(self):
+        self.send_message_signal.connect(self.show_message)
+        self.update_signal.connect(self.update)
 
     def check_sweepers(self):
         if len(self.sweepers) > 0:
@@ -191,11 +196,14 @@ class Window(QWidget):
                 return sweeper
 
     @Slot(str, int)
-    def update(self, gallery_title, count):
+    def update(self, gallery_title, delta_count):
+
+        self.gallery_power[gallery_title] += delta_count
         index = self.get_gallery_index(gallery_title)
 
         try:
-            self.tbl_targets.setItem(index, 1, QTableWidgetItem(str(count)))
+            self.tbl_targets.setItem(index, 1,
+                QTableWidgetItem(str(self.gallery_power[gallery_title])))
         except TypeError:
             pass
 

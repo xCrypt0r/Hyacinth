@@ -18,7 +18,6 @@ class DCSweeper:
         self.gallery_title = gallery_title
         self.ua = UserAgent()
         self.post_sweeped = []
-        self.image_count = 0
 
         if self.is_minor:
             self.list_url = self.list_url.replace('board', 'mgallery/board')
@@ -79,10 +78,10 @@ class DCSweeper:
 
         post_title = soup.find('span', class_='title_subject').text
         post_date = soup.find('span', class_='gall_date').text
+        attachments = appending_file.find_all('li')
+        delta_count = 0
 
         print(f'[{post_date[-8:]}] <{self.gallery_title}> {post_title}')
-
-        attachments = appending_file.find_all('li')
 
         for i, attachment in enumerate(attachments):
             attachment_url = attachment.find('a', href=True)['href']
@@ -95,6 +94,6 @@ class DCSweeper:
             request.urlretrieve(attachment_url,
                 f'archive/{self.gallery_title}/{self.gallery_id}_{target_post}_{i + 1}{extension}')
 
-            self.image_count += 1
+            delta_count += 1
 
-        self.gui.update_signal.emit(self.gallery_title, self.image_count)
+        self.gui.update_signal.emit(self.gallery_title, delta_count)
