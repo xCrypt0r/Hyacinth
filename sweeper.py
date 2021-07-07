@@ -22,7 +22,10 @@ class DCSweeper:
 
         with open('assets/json/config.json', encoding='utf8') as config_file:
             config = json.load(config_file)
-            self.folder = os.path.join(config['archive_path'], self.gallery_title)
+            self.folder = os.path.join(
+                config['archive_path'],
+                self.gallery_title
+            )
             self.sweeping_interval = config['sweeping_interval']
 
         if self.is_minor:
@@ -40,7 +43,10 @@ class DCSweeper:
 
         self.sweep_images_from_post(self.get_target_post())
 
-        self._timer = threading.Timer(self.sweeping_interval, self.start_sweeping)
+        self._timer = threading.Timer(
+            self.sweeping_interval,
+            self.start_sweeping
+        )
         self._timer.daemon = True
 
         self._timer.start()
@@ -51,9 +57,11 @@ class DCSweeper:
         self.is_stopped = True
 
     def get_target_post(self):
-        req = requests.get(self.list_url,
+        req = requests.get(
+            self.list_url,
             params={ 'id': self.gallery_id },
-            headers={ 'User-Agent': self.ua.random })
+            headers={ 'User-Agent': self.ua.random }
+        )
         soup = BeautifulSoup(req.content, 'html.parser')
         tbody = soup.find('tbody')
 
@@ -72,10 +80,12 @@ class DCSweeper:
         self.post_sweeped.append(target_post)
 
         try:
-            req = requests.get(self.post_url,
+            req = requests.get(
+                self.post_url,
                 params={ 'id': self.gallery_id, 'no': target_post },
                 headers={ 'User-Agent': self.ua.random },
-                timeout=5)
+                timeout=5
+            )
         except:
             return
 
@@ -96,12 +106,20 @@ class DCSweeper:
             attachment_url = attachment.find('a', href=True)['href']
             extension = os.path.splitext(attachment_url)[1]
             opener = request.build_opener()
-            opener.addheaders = [('User-agent', self.ua.random), ('Referer', req.url)]
+            opener.addheaders = [
+                ('User-agent', self.ua.random),
+                ('Referer', req.url)
+            ]
 
             Path(self.folder).mkdir(parents=True, exist_ok=True)
             request.install_opener(opener)
-            request.urlretrieve(attachment_url,
-                f'{self.folder}/{self.gallery_id}_{target_post}_{i + 1}{extension}')
+            request.urlretrieve(
+                attachment_url,
+                os.path.join(
+                    self.folder,
+                    f'{self.gallery_id}_{target_post}_{i + 1}{extension}'
+                )
+            )
 
             delta_count += 1
 

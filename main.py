@@ -40,8 +40,12 @@ class Window(QMainWindow):
         with open('assets/json/const.json', encoding='utf8') as const_file:
             const = json.load(const_file)
             self.galleries = const['galleries']
-            self.minor_galleries = dict(map(lambda x: (x[0], 'ⓜ' + x[1]),
-                const['minor_galleries'].items()))
+            self.minor_galleries = dict(
+                map(
+                    lambda x: (x[0], 'ⓜ' + x[1]),
+                    const['minor_galleries'].items()
+                )
+            )
 
         with open('assets/json/config.json', encoding='utf8') as config_file:
             config = json.load(config_file)
@@ -66,10 +70,9 @@ class Window(QMainWindow):
         self.cmb_galleries = QComboBox(self)
         galleries = list(sorted(self.galleries.values()))
         minor_galleries = list(sorted(self.minor_galleries.values()))
-        galleries += minor_galleries
 
-        self.cmb_galleries.addItems(galleries)
         self.cmb_galleries.setGeometry(20, 20, 140, 30)
+        self.cmb_galleries.addItems(galleries + minor_galleries)
 
         self.btn_add = QPushButton('추가', self)
 
@@ -78,10 +81,20 @@ class Window(QMainWindow):
 
         self.tbl_targets = QTableWidget(0, 3, self)
 
-        self.tbl_targets.setHorizontalHeaderLabels(['갤러리', '화력', '재연결'])
         self.tbl_targets.setGeometry(20, 60, 460, 220)
+        self.tbl_targets.setHorizontalHeaderLabels([
+            '갤러리',
+            '화력',
+            '재연결'
+        ])
         self.tbl_targets.horizontalHeader().setStyleSheet(
-            'QHeaderView::section { padding-right: 10px; border: 0 }')
+            """
+                QHeaderView::section {
+                    padding-right: 10px;
+                    border: 0;
+                }
+            """
+        )
         self.tbl_targets.verticalHeader().setVisible(False)
         self.tbl_targets.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.tbl_targets.setFocusPolicy(Qt.NoFocus)
@@ -103,14 +116,16 @@ class Window(QMainWindow):
             for sweeper in self.sweepers:
                 try:
                     if not sweeper._timer.is_alive():
-                        print(f'\n<{sweeper.gallery_title}> 갤러리에 재연결합니다...\n')
                         self.refresh_target(sweeper.gallery_title)
 
                         break
                 except AttributeError:
                     pass
 
-        timer = threading.Timer(self.health_check_interval, self.check_sweepers)
+        timer = threading.Timer(
+            self.health_check_interval,
+            self.check_sweepers
+        )
         timer.daemon = True
 
         timer.start()
@@ -128,7 +143,10 @@ class Window(QMainWindow):
         gallery_title = self.cmb_galleries.currentText()
 
         if self.get_gallery_index(gallery_title) is not None:
-            self.send_message_signal.emit('이미 테이블에 추가된 갤러리입니다!', '오류')
+            self.send_message_signal.emit(
+                '이미 테이블에 추가된 갤러리입니다!',
+                '오류'
+            )
             self.btn_add.setEnabled(True)
 
             return
@@ -156,11 +174,13 @@ class Window(QMainWindow):
     def remove_target(self):
         index = self.tbl_targets.currentIndex().row()
         gallery_title = self.tbl_targets.item(index, 0).text()
-        reply = QMessageBox.question(self,
+        reply = QMessageBox.question(
+            self,
             '삭제',
             f'{gallery_title} 갤러리 크롤링을 중지할까요?',
             QMessageBox.Yes | QMessageBox.No,
-            QMessageBox.No)
+            QMessageBox.No
+        )
 
         if reply == QMessageBox.Yes:
             sweeper = self.get_sweeper(gallery_title)
@@ -208,8 +228,11 @@ class Window(QMainWindow):
         index = self.get_gallery_index(gallery_title)
 
         try:
-            self.tbl_targets.setItem(index, 1,
-                QTableWidgetItem(str(self.gallery_power[gallery_title])))
+            self.tbl_targets.setItem(
+                index,
+                1,
+                QTableWidgetItem(str(self.gallery_power[gallery_title]))
+            )
         except TypeError:
             pass
 
