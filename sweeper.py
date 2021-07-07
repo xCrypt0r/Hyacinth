@@ -23,6 +23,9 @@ class DCSweeper:
             self.list_url = self.list_url.replace('board', 'mgallery/board')
             self.post_url = self.post_url.replace('board', 'mgallery/board')
 
+    def run(self):
+        threading.Timer(0.1, self.start_sweeping).start()
+
     def start_sweeping(self):
         if self.is_stopped:
             self._timer.cancel()

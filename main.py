@@ -100,11 +100,14 @@ class Window(QMainWindow):
     def check_sweepers(self):
         if len(self.sweepers) > 0:
             for sweeper in self.sweepers:
-                if not sweeper._timer.is_alive():
-                    print(f'\n<{sweeper.gallery_title}> 갤러리에 재연결합니다...\n')
-                    self.refresh_target(sweeper.gallery_title)
+                try:
+                    if not sweeper._timer.is_alive():
+                        print(f'\n<{sweeper.gallery_title}> 갤러리에 재연결합니다...\n')
+                        self.refresh_target(sweeper.gallery_title)
 
-                    break
+                        break
+                except AttributeError:
+                    pass
 
         timer = threading.Timer(5, self.check_sweepers)
         timer.daemon = True
@@ -113,10 +116,12 @@ class Window(QMainWindow):
 
     def add_default_targets(self):
         for gallery_title in self.default_target_galleries:
-            self.cmb_galleries.setCurrentText(gallery_title)
-            self.add_target()
+            self.add_target(gallery_title)
 
-    def add_target(self):
+    def add_target(self, gallery_title=''):
+        if gallery_title:
+            self.cmb_galleries.setCurrentText(gallery_title)
+
         self.btn_add.setEnabled(False)
 
         gallery_title = self.cmb_galleries.currentText()
@@ -143,7 +148,7 @@ class Window(QMainWindow):
 
         sweeper = DCSweeper(self, gallery_id, gallery_title)
 
-        sweeper.start_sweeping()
+        sweeper.run()
         self.sweepers.append(sweeper)
         self.btn_add.setEnabled(True)
 
@@ -212,10 +217,7 @@ class Window(QMainWindow):
         msgbox = QMessageBox(self)
 
         msgbox.setText(message)
-
-        if title:
-            msgbox.setWindowTitle(title)
-
+        msgbox.setWindowTitle(title)
         msgbox.show()
 
 if __name__ == '__main__':
