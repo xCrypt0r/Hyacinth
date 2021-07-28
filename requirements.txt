@@ -1,5 +1,5 @@
 qtmodern==0.2.0
-requests==2.25.1
+requests==2.26.0
 fake_useragent==0.1.11
 beautifulsoup4==4.9.3
 PySide2==5.15.2
