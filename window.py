@@ -1,5 +1,6 @@
 import json
 import threading
+from PySide2 import QtCore
 from PySide2.QtCore import (
     Qt,
     Signal,
@@ -19,6 +20,12 @@ from PySide2.QtWidgets import (
 )
 from collections import defaultdict
 from sweeper import DCSweeper
+
+if hasattr(QtCore.Qt, 'AA_EnableHighDpiScaling'):
+    QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
+
+if hasattr(QtCore.Qt, 'AA_UseHighDpiPixmaps'):
+    QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
 
 class Window(QMainWindow):
     send_message_signal = Signal(str, str)
