@@ -6,5 +6,5 @@
         "인터넷방송"
     ],
     "health_check_interval": 5,
-    "sweeping_interval": 2
+    "sweeping_interval": 0.5
 }

@@ -107,8 +107,13 @@ class DCSweeper:
             extension = os.path.splitext(attachment_url)[1]
             opener = request.build_opener()
             opener.addheaders = [
-                ('User-agent', self.ua.random),
-                ('Referer', req.url)
+                ('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9'),
+                ('Accept-Language', 'ko-KR,ko;q=0.9'),
+                ('Cache-Control', 'max-age=0'),
+                ('Connection', 'keep-alive'),
+                ('Referer', req.url),
+                ('Upgrade-Insecure-Requests', '1'),
+                ('User-agent', self.ua.random)
             ]
 
             Path(self.folder).mkdir(parents=True, exist_ok=True)
