@@ -11,7 +11,7 @@ Hyacinth © xCrypt0r
 Authored and maintained by xCrypt0r  
 
 > GitHub [**@xCrypt0r**][my github]  
-> Discord **xCrypt0r#5695**  
+> Discord [**@xcrypt0r**][my discord]
 
 ## Requirements
 -   Python >= 3.5
@@ -24,7 +24,7 @@ Authored and maintained by xCrypt0r
 
 1. Run `cd Hyacinth` to move to Hyacinth folder
 
-1. Run `pip install -r requirements.txt` to install all dependencies listed in [requirements.txt](requirements.txt)
+1. Run `pip install -r requirements.txt` to install all dependencies listed in [`requirements.txt`](requirements.txt)
 
 1. Run `ren config.example.json config.json` to rename [`config.example.json`](assets/json/config.example.json)
 
@@ -33,3 +33,4 @@ Authored and maintained by xCrypt0r
 [python]: https://www.python.org/
 [codacy]: https://app.codacy.com/gh/xCrypt0r/Hyacinth/dashboard
 [my github]: https://github.com/xCrypt0r
+[my discord]: https://discord.com/users/282821913968115713
