@@ -6,12 +6,7 @@
 
 🌸 **Hyacinth** is dcinside image crawler with deadly simple structure
 
-## Author
-Hyacinth © xCrypt0r  
-Authored and maintained by xCrypt0r  
-
-> GitHub [**@xCrypt0r**][my github]  
-> Discord [**@xcrypt0r**][my discord]
+**‼️ This project is deprecated please use [Watchdog](https://github.com/xCrypt0r/Watchdog) instead**
 
 ## Requirements
 -   Python >= 3.5
@@ -29,6 +24,13 @@ Authored and maintained by xCrypt0r
 1. Run `ren config.example.json config.json` to rename [`config.example.json`](assets/json/config.example.json)
 
 1. Run `python main.py` or run [`start.bat`](start.bat) / [`start.vbs (no-console mode)`](start.vbs) to start program
+
+## Author
+Hyacinth © xCrypt0r  
+Authored and maintained by xCrypt0r  
+
+> GitHub [**@xCrypt0r**][my github]  
+> Discord [**@xcrypt0r**][my discord]
 
 [python]: https://www.python.org/
 [codacy]: https://app.codacy.com/gh/xCrypt0r/Hyacinth/dashboard
