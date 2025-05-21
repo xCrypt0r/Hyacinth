@@ -1,3 +1,6 @@
+> [!WARNING]
+> This project is deprecated. Please use [Watchdog](https://github.com/xCrypt0r/Watchdog) instead.
+
 # Hyacinth
 [![Language](https://img.shields.io/badge/Language-Python-3776ab?style=for-the-badge&logo=python)][python]
 [![MIT License](https://img.shields.io/badge/License-MIT-007ec6?style=for-the-badge&logo=github)](LICENSE)
@@ -5,8 +8,6 @@
 [![Codacy grade](https://img.shields.io/codacy/grade/91b6c208ea6a40158745becf0a264c86?style=for-the-badge&label=QUALITY&logo=codacy)][codacy]
 
 🌸 **Hyacinth** is a dcinside image crawler with deadly simple structure
-
-**⚠️ This project is deprecated please use [Watchdog](https://github.com/xCrypt0r/Watchdog) instead**
 
 ## Requirements
 -   Python >= 3.5
